@@ -1,0 +1,38 @@
+{
+  "name": "cdk-docker-monorepo",
+  "version": "1.0.0",
+  "description": "",
+  "bin": {
+    "docker-monorepo": "bin/docker-monorepo.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "deploy:pipeline": "npx cdk deploy DockerMonorepo",
+    "list": "npx cdk list",
+    "synth:dev": "npx cdk synth",
+    "deploy:dev": "npx cdk synth && npx cdk -a cdk.out/assembly-DockerMonorepoDev deploy",
+    "destroy:dev": "npm run cdk destroy DockerMonorepoDev",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk"
+  },
+  "keywords": [],
+  "author": "devops-at-home",
+  "license": "MIT",
+  "devDependencies": {
+    "@aws-cdk/assert": "1.87.1",
+    "@aws-cdk/aws-codebuild": "1.87.1",
+    "@aws-cdk/aws-codepipeline": "1.87.1",
+    "@aws-cdk/aws-codepipeline-actions": "1.87.1",
+    "@aws-cdk/aws-ecr": "1.87.1",
+    "@aws-cdk/core": "1.87.1",
+    "@aws-cdk/pipelines": "^1.87.1",
+    "@types/jest": "^26.0.20",
+    "@types/node": "^14.14.22",
+    "aws-cdk": "1.87.1",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.4.4",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  }
+}
