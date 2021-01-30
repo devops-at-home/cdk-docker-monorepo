@@ -3,7 +3,7 @@ import * as ecr from "@aws-cdk/aws-ecr";
 import * as iam from "@aws-cdk/aws-iam";
 
 export class ECR extends cdk.Construct {
-  public repos: { [key: string]: ecr.Repository };
+  public repos: { [key: string]: ecr.Repository } = {};
   private dockerRole: iam.IRole;
   constructor(
     scope: cdk.Construct,
