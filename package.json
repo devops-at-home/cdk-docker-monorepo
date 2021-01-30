@@ -7,7 +7,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "deploy:pipeline": "npx cdk deploy DockerMonorepo",
+    "deploy:pipeline": "npx cdk deploy DockerMonorepoPipeline",
     "list": "npx cdk list",
     "synth:dev": "npx cdk synth",
     "deploy:dev": "npx cdk synth && npx cdk -a cdk.out/assembly-DockerMonorepoDev deploy",
