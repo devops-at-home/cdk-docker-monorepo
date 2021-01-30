@@ -1,5 +1,6 @@
 import { readdirSync } from "fs";
 import * as cdk from "@aws-cdk/core";
+import * as ssm from "@aws-cdk/aws-ssm";
 import * as pipelines from "@aws-cdk/pipelines";
 import * as codebuild from "@aws-cdk/aws-codebuild";
 import * as codepipeline from "@aws-cdk/aws-codepipeline";
@@ -29,10 +30,18 @@ export class DockerMonorepoPipelineStack extends cdk.Stack {
       ),
     });
 
+    // Docker access token
     secretsmanager.Secret.fromSecretNameV2(
       this,
       "dockerToken",
       "/docker/build/accessToken"
+    ).grantRead(dockerBuild.role!);
+
+    // Docker user name
+    ssm.StringParameter.fromStringParameterName(
+      this,
+      "DockerUserSystemParam",
+      "/docker/build/user"
     ).grantRead(dockerBuild.role!);
 
     const repoNames = this.__getFolders(subdirectory);
