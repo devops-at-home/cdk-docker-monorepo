@@ -3,11 +3,26 @@ version: 0.2
 env:
   secrets-manager:
     DOCKER_TOKEN: /docker/build/accessToken
+  variables:
+    DOCKER_CLI_EXPERIMENTAL: enabled
 phases:
   install:
     runtime-versions:
       docker: 19
       nodejs: 12
+    commands:
+      - yum update -y
+  pre_build:
+    commands:
+      - echo "Logging in to Docker..."
+      - echo $DOCKER_TOKEN | docker login --username user --password-stdin
+      - echo "Logging in to Amazon ECR..."
+      - REPO="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com"
+      - aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPO
   build:
     commands:
-      - echo "Hello, World!"
+      - .ci/build.sh
+  post_build:
+    commands:
+      - docker logout
+      - docker logout $REPO
