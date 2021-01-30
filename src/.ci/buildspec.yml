@@ -1,0 +1,13 @@
+version: 0.1
+
+env:
+  secrets-manager:
+    DOCKER_TOKEN: /docker/build/accessToken
+phases:
+  install:
+    runtime-versions:
+      docker: 19
+      nodejs: 12
+  build:
+    commands:
+      - echo "Hello, World!"

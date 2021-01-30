@@ -1,3 +1,4 @@
 node_modules/
 .parcel-cache/
 cdk.out/
+.idea
