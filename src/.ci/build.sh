@@ -4,14 +4,18 @@ docker version
 
 GIT_SHA=`git rev-parse HEAD`
 
-if [ "$PREV_GIT_SHA" == "1234" ]; then
+function put_param () {
   echo "Set git sha and exit"
   aws ssm put-parameter \
     --name "/codebuild/state/docker-monorepo/prev-git-sha" \
     --type "String" \
     --value "$GIT_SHA"\
-    --overwrite
+    --overwritez
   exit 0
+}
+
+if [ "$PREV_GIT_SHA" == "1234" ]; then
+  put_param
 fi
 
 for VERSION_FILE_PATH in $(git diff-tree --no-commit-id --name-only -r "$GIT_SHA" "$PREV_GIT_SHA" | grep "VERSION");
@@ -27,3 +31,5 @@ do
   echo ECR_REPOSITORY=$ECR_REPOSITORY
   echo VERSION=$VERSION
 done;
+
+put_param
