@@ -2,10 +2,9 @@
 
 # Start Docker in Docker for experimental mode
 # From: https://github.com/aws/aws-codebuild-docker-images/issues/351
-docker run -d --privileged -p 2376:2376 -v "$(pwd):/code" "docker:$(docker version -f '{{.Server.Version}}')-dind" dockerd --host=tcp://0.0.0.0:2376 --experimental
-export DOCKER_HOST=tcp://127.0.0.1:2376
-
-sleep 2
+# docker run -d --privileged -p 2376:2376 -v "$(pwd):/code" "docker:$(docker version -f '{{.Server.Version}}')-dind" dockerd --host=tcp://0.0.0.0:2376 --experimental
+# export DOCKER_HOST=tcp://127.0.0.1:2376
+# sleep 2
 
 docker version
 docker buildx create --name mybuilder
