@@ -43,7 +43,8 @@ export class DockerMonorepoPipelineStack extends cdk.Stack {
       new iam.Policy(this, "DockerBuildAddPerms", {
         statements: [
           new iam.PolicyStatement({
-            actions: ["codestar-connections:UseConnection"],
+            // actions: ["codestar-connections:UseConnection"],
+            actions: ["codestar-connections:*"],
             resources: [connectionArn],
             effect: iam.Effect.ALLOW,
           }),
