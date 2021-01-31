@@ -5,6 +5,12 @@
 docker run -d --privileged -p 2376:2376 -v "$(pwd):/code" "docker:$(docker version -f '{{.Server.Version}}')-dind" dockerd --host=tcp://0.0.0.0:2376 --experimental
 export DOCKER_HOST=tcp://127.0.0.1:2376
 
+sleep 1
+
+docker ps -a
+
+sleep 1
+
 docker version
 
 GIT_SHA=`git rev-parse HEAD`
