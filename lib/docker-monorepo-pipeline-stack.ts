@@ -61,7 +61,7 @@ export class DockerMonorepoPipelineStack extends cdk.Stack {
             effect: iam.Effect.ALLOW,
           }),
           new iam.PolicyStatement({
-            actions: ["ssm:PutParameters"],
+            actions: ["ssm:PutParameter"],
             resources: [
               `arn:aws:ssm:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:parameter/codebuild/state/docker-monorepo/*`,
             ],
