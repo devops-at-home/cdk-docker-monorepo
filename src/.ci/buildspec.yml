@@ -1,10 +1,10 @@
 version: 0.2
 
 env:
-  secrets-manager:
-    DOCKER_TOKEN: /docker/build/token
   parameter-store:
     DOCKER_USER: /docker/build/user
+    DOCKER_TOKEN: /docker/build/token
+    PREV_GIT_SHA: /codebuild/state/docker-monorepo/prev-git-sha
   variables:
     DOCKER_CLI_EXPERIMENTAL: enabled
 phases:
