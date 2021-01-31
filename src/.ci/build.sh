@@ -31,6 +31,8 @@ do
   echo ECR_REPOSITORY=$ECR_REPOSITORY
   echo VERSION=$VERSION
 
+  # From: https://aws.amazon.com/blogs/devops/creating-multi-architecture-docker-images-to-support-graviton2-using-aws-codebuild-and-aws-codepipeline/
+
   echo Building the amd64 Docker image on `date`
   docker buildx build \
     --platform linux/amd64 \
