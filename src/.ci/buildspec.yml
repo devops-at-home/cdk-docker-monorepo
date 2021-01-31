@@ -7,12 +7,17 @@ env:
     PREV_GIT_SHA: /codebuild/state/docker-monorepo/prev-git-sha
   variables:
     DOCKER_CLI_EXPERIMENTAL: enabled
+    BUILDX_VERSION: v0.5.1
 phases:
   install:
     runtime-versions:
       docker: 19
-    # commands:
-    #   - yum update -y
+    commands:
+      # - yum update -y
+      - wget `https://github.com/docker/buildx/releases/download/${BUILDX_VERSION}/buildx-${BUILDX_VERSION}.linux-amd64`
+      - chmod a+x `buildx-${BUILDX_VERSION}.linux-amd64`
+      - mkdir -p ~/.docker/cli-plugins
+      - mv `buildx-${BUILDX_VERSION}.linux-amd64` ~/.docker/cli-plugins/docker-buildx
   pre_build:
     commands:
       - echo "Logging in to Docker..."

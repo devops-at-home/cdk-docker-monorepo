@@ -10,8 +10,7 @@ sleep 2
 docker version
 docker buildx create --name mybuilder
 docker buildx use mybuilder
-
-$ docker buildx inspect --bootstrap
+docker buildx inspect --bootstrap
 
 GIT_SHA=`git rev-parse HEAD`
 
