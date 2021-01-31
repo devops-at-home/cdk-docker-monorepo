@@ -9,7 +9,7 @@ if [ "$PREV_GIT_SHA" == "1234" ]; then
   aws ssm put-parameter \
     --name "/codebuild/state/docker-monorepo/prev-git-sha" \
     --type "String" \
-    --value "$SHA"\
+    --value "$GIT_SHA"\
     --overwrite
   exit 0
 fi
