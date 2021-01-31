@@ -65,28 +65,8 @@ export class DockerMonorepoPipelineStack extends cdk.Stack {
         buildCommand: "npm run build",
         rolePolicyStatements: [
           new iam.PolicyStatement({
-            actions: [
-              "codestar-connections:GetIndividualAccessToken",
-              "codestar-connections:GetHost",
-              "codestar-connections:UseConnection",
-              "codestar-connections:StartOAuthHandshake",
-              "codestar-connections:GetInstallationUrl",
-              "codestar-connections:GetConnection",
-              "codestar-connections:StartAppRegistrationHandshake",
-              "codestar-connections:PassConnection",
-              "codestar-connections:RegisterAppCode",
-            ],
+            actions: ["codestar-connections:UseConnection"],
             resources: [connectionArn],
-            effect: iam.Effect.ALLOW,
-          }),
-          new iam.PolicyStatement({
-            actions: [
-              "codestar-connections:ListTagsForResource",
-              "codestar-connections:ListInstallationTargets",
-              "codestar-connections:ListHosts",
-              "codestar-connections:ListConnections",
-            ],
-            resources: ["*"],
             effect: iam.Effect.ALLOW,
           }),
         ],
