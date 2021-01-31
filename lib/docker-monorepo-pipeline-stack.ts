@@ -90,7 +90,8 @@ export class DockerMonorepoPipelineStack extends cdk.Stack {
     // Escape hatch to modify the specific Stage Properties
     // See https://github.com/mohanrajendran/aws-cdk/commit/abec4973ad7cbc61b9fbe33bc1602f14511f47cd
     // And https://github.com/aws/aws-cdk/issues/12236
-    const cfnPipeline = pipeline.node.defaultChild as codepipeline.CfnPipeline;
+    const cfnPipeline = pipeline.codePipeline.node
+      .defaultChild as codepipeline.CfnPipeline;
     cfnPipeline.addPropertyOverride(
       "Stages.0.Actions.0.Configuration.OutputArtifactFormat",
       "CODEBUILD_CLONE_REF"
