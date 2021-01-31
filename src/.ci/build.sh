@@ -3,6 +3,8 @@
 docker version
 
 GIT_SHA=`git ls-remote | grep refs/heads/master | cut -f 1`
+echo $GIT_SHA
+git ls-remote
 
 if [ "$PREV_GIT_SHA" == "1234" ]; then
   echo "Set git sha and exit"
