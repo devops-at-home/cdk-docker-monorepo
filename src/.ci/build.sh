@@ -5,13 +5,13 @@
 docker run -d --privileged -p 2376:2376 -v "$(pwd):/code" "docker:$(docker version -f '{{.Server.Version}}')-dind" dockerd --host=tcp://0.0.0.0:2376 --experimental
 export DOCKER_HOST=tcp://127.0.0.1:2376
 
-sleep 1
-
-docker ps -a
-
-sleep 1
+sleep 2
 
 docker version
+docker buildx create --name mybuilder
+docker buildx use mybuilder
+
+$ docker buildx inspect --bootstrap
 
 GIT_SHA=`git rev-parse HEAD`
 
@@ -52,19 +52,14 @@ do
   echo VERSION=$VERSION
 
   # From: https://aws.amazon.com/blogs/devops/creating-multi-architecture-docker-images-to-support-graviton2-using-aws-codebuild-and-aws-codepipeline/
+  # And: https://docs.docker.com/docker-for-mac/multi-arch/
+  docker buildx build \
+    --platform linux/amd64,linux/arm64 \
+    --tag $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY:latest \
+    --tag $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY:$VERSION \
+    --push \
+    /code/src/$ECR_REPOSITORY
 
-  ARCH=arm64 build_docker_image
-  ARCH=amd64 build_docker_image
-
-  echo Building the Docker manifest on `date` 
-  docker manifest create $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY:latest-arm64 $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY:latest-amd64    
-  docker manifest annotate --arch arm64 $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY:latest-arm64
-  docker manifest annotate --arch amd64 $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY:latest-amd64
-  docker manifest create $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY:$VERSION-arm64 $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY:$VERSION-amd64    
-  docker manifest annotate --arch arm64 $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY:$VERSION-arm64
-  docker manifest annotate --arch amd64 $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY:$VERSION-amd64
-  docker manifest push $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY
-  docker manifest inspect $ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPOSITORY
 done;
 
 put_param
