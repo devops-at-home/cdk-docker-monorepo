@@ -30,12 +30,6 @@ export class DockerMonorepoPipelineStack extends cdk.Stack {
       ), // investigate implementing s3 caching
     });
 
-    this.__roleAccessParams(dockerBuild.role!, [
-      "/docker/build/token",
-      "/docker/build/user",
-      "/codebuild/state/docker-monorepo/prev-git-sha",
-    ]);
-
     const repoNames = this.__getFolders(subdirectory);
     const ecr = new ECR(this, "EcrRepos", repoNames, dockerBuild.role!);
 
@@ -46,16 +40,40 @@ export class DockerMonorepoPipelineStack extends cdk.Stack {
     );
 
     dockerBuild.role!.attachInlinePolicy(
-      new iam.Policy(this, "DockerBuildPermsForGithubConnection", {
+      new iam.Policy(this, "DockerBuildAddPerms", {
         statements: [
           new iam.PolicyStatement({
             actions: ["codestar-connections:UseConnection"],
             resources: [connectionArn],
             effect: iam.Effect.ALLOW,
           }),
+          new iam.PolicyStatement({
+            actions: ["sm:DescribeParameters"],
+            resources: ["*"],
+            effect: iam.Effect.ALLOW,
+          }),
+          new iam.PolicyStatement({
+            actions: ["ssm:GetParameters"],
+            resources: [
+              `arn:aws:ssm:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:parameter/docker/build/*`,
+              `arn:aws:ssm:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:parameter/codebuild/state/docker-monorepo/*`,
+            ],
+            effect: iam.Effect.ALLOW,
+          }),
+          new iam.PolicyStatement({
+            actions: ["ssm:PutParameters"],
+            resources: [
+              `arn:aws:ssm:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:parameter/codebuild/state/docker-monorepo/*`,
+            ],
+            effect: iam.Effect.ALLOW,
+          }),
         ],
       })
     );
+
+    // "/docker/build/token",
+    // "/docker/build/user",
+    // "/codebuild/state/docker-monorepo/prev-git-sha"
 
     const pipeline = new pipelines.CdkPipeline(this, "DockerMonorepoPipeline", {
       pipelineName: "DockerMonorepo",
@@ -126,16 +144,5 @@ export class DockerMonorepoPipelineStack extends cdk.Stack {
       }
     }
     return outputList;
-  };
-
-  private __roleAccessParams = (role: iam.IRole, params: string[]) => {
-    for (let idx in params) {
-      const param = params[idx];
-      ssm.StringParameter.fromStringParameterName(
-        this,
-        `SystemParamAccess-${param}`,
-        param
-      ).grantRead(role);
-    }
   };
 }
