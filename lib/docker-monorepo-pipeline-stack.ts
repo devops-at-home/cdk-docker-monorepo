@@ -45,6 +45,18 @@ export class DockerMonorepoPipelineStack extends cdk.Stack {
       connectionParam
     );
 
+    dockerBuild.role!.attachInlinePolicy(
+      new iam.Policy(this, "DockerBuildPermsForGithubConnection", {
+        statements: [
+          new iam.PolicyStatement({
+            actions: ["codestar-connections:UseConnection"],
+            resources: [connectionArn],
+            effect: iam.Effect.ALLOW,
+          }),
+        ],
+      })
+    );
+
     const pipeline = new pipelines.CdkPipeline(this, "DockerMonorepoPipeline", {
       pipelineName: "DockerMonorepo",
       cloudAssemblyArtifact,
