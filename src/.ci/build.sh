@@ -2,9 +2,9 @@
 
 docker version
 
-GIT_SHA=`git ls-remote | grep refs/heads/master | cut -f 1`
+GIT_SHA=`git rev-parse HEAD`
 echo $GIT_SHA
-git ls-remote
+git rev-parse HEAD
 
 if [ "$PREV_GIT_SHA" == "1234" ]; then
   echo "Set git sha and exit"
