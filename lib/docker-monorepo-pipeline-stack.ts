@@ -39,6 +39,12 @@ export class DockerMonorepoPipelineStack extends cdk.Stack {
     const repoNames = this.__getFolders(subdirectory);
     const ecr = new ECR(this, "EcrRepos", repoNames, dockerBuild.role!);
 
+    const connectionParam = "/codebuild/connections/github-devops-at-home";
+    const connectionArn = ssm.StringParameter.valueForStringParameter(
+      this,
+      connectionParam
+    );
+
     const pipeline = new pipelines.CdkPipeline(this, "DockerMonorepoPipeline", {
       pipelineName: "DockerMonorepo",
       cloudAssemblyArtifact,
@@ -49,10 +55,7 @@ export class DockerMonorepoPipelineStack extends cdk.Stack {
         owner: "devops-at-home",
         branch: "master",
         repo: "cdk-docker-monorepo",
-        connectionArn: ssm.StringParameter.valueForStringParameter(
-          this,
-          "/codebuild/connections/github-devops-at-home"
-        ),
+        connectionArn: connectionArn,
       }),
 
       synthAction: pipelines.SimpleSynthAction.standardNpmSynth({
@@ -81,6 +84,8 @@ export class DockerMonorepoPipelineStack extends cdk.Stack {
         },
       })
     );
+
+    this.__roleAccessConn(pipeline.codePipeline.role, connectionArn);
 
     // Escape hatch to modify the specific Stage Properties
     // See https://github.com/mohanrajendran/aws-cdk/commit/abec4973ad7cbc61b9fbe33bc1602f14511f47cd
@@ -115,5 +120,39 @@ export class DockerMonorepoPipelineStack extends cdk.Stack {
         param
       ).grantRead(role);
     }
+  };
+
+  private __roleAccessConn = (role: iam.IRole, connArn: string) => {
+    const connAccessPolicy = new iam.Policy(this, "ConnAccessPolicy", {
+      statements: [
+        new iam.PolicyStatement({
+          actions: [
+            "codestar-connections:GetIndividualAccessToken",
+            "codestar-connections:GetHost",
+            "codestar-connections:UseConnection",
+            "codestar-connections:StartOAuthHandshake",
+            "codestar-connections:GetInstallationUrl",
+            "codestar-connections:GetConnection",
+            "codestar-connections:StartAppRegistrationHandshake",
+            "codestar-connections:PassConnection",
+            "codestar-connections:RegisterAppCode",
+          ],
+          resources: [connArn],
+          effect: iam.Effect.ALLOW,
+        }),
+        new iam.PolicyStatement({
+          actions: [
+            "codestar-connections:ListTagsForResource",
+            "codestar-connections:ListInstallationTargets",
+            "codestar-connections:ListHosts",
+            "codestar-connections:ListConnections",
+          ],
+          resources: ["*"],
+          effect: iam.Effect.ALLOW,
+        }),
+      ],
+    });
+
+    role.attachInlinePolicy(connAccessPolicy);
   };
 }
