@@ -1,11 +1,11 @@
 import { readdirSync } from "fs";
 import * as cdk from "@aws-cdk/core";
+import * as iam from "@aws-cdk/aws-iam";
 import * as ssm from "@aws-cdk/aws-ssm";
 import * as pipelines from "@aws-cdk/pipelines";
 import * as codebuild from "@aws-cdk/aws-codebuild";
 import * as codepipeline from "@aws-cdk/aws-codepipeline";
 import * as codepipeline_actions from "@aws-cdk/aws-codepipeline-actions";
-import * as secretsmanager from "@aws-cdk/aws-secretsmanager";
 import { ECR } from "./constructs/ecr";
 
 export class DockerMonorepoPipelineStack extends cdk.Stack {
@@ -27,22 +27,14 @@ export class DockerMonorepoPipelineStack extends cdk.Stack {
       cache: codebuild.Cache.local(
         codebuild.LocalCacheMode.DOCKER_LAYER,
         codebuild.LocalCacheMode.CUSTOM
-      ),
+      ), // investigate implementing s3 caching
     });
 
-    // Docker access token
-    secretsmanager.Secret.fromSecretNameV2(
-      this,
-      "dockerToken",
-      "/docker/build/accessToken"
-    ).grantRead(dockerBuild.role!);
-
-    // Docker user name
-    ssm.StringParameter.fromStringParameterName(
-      this,
-      "DockerUserSystemParam",
-      "/docker/build/user"
-    ).grantRead(dockerBuild.role!);
+    this.__roleAccessParams(dockerBuild.role!, [
+      "/docker/build/token",
+      "/docker/build/user",
+      "/codebuild/state/docker-monorepo/prev-git-sha",
+    ]);
 
     const repoNames = this.__getFolders(subdirectory);
     const ecr = new ECR(this, "EcrRepos", repoNames, dockerBuild.role!);
@@ -51,13 +43,16 @@ export class DockerMonorepoPipelineStack extends cdk.Stack {
       pipelineName: "DockerMonorepo",
       cloudAssemblyArtifact,
 
-      sourceAction: new codepipeline_actions.GitHubSourceAction({
-        actionName: "GitHub",
+      sourceAction: new codepipeline_actions.BitBucketSourceAction({
+        actionName: "GitHubDevOpsAtHome",
         output: sourceArtifact,
-        oauthToken: cdk.SecretValue.secretsManager("/github/build/accessToken"),
         owner: "devops-at-home",
         branch: "master",
         repo: "cdk-docker-monorepo",
+        connectionArn: ssm.StringParameter.valueForStringParameter(
+          this,
+          "/codebuild/connections/github-devops-at-home"
+        ),
       }),
 
       synthAction: pipelines.SimpleSynthAction.standardNpmSynth({
@@ -109,5 +104,16 @@ export class DockerMonorepoPipelineStack extends cdk.Stack {
       }
     }
     return outputList;
+  };
+
+  private __roleAccessParams = (role: iam.IRole, params: string[]) => {
+    for (let idx in params) {
+      const param = params[idx];
+      ssm.StringParameter.fromStringParameterName(
+        this,
+        `SystemParamAccess-${param}`,
+        param
+      ).grantRead(role);
+    }
   };
 }
