@@ -1,8 +1,0 @@
-{
-  "files.exclude": {
-    "**/.parcel-cache": true,
-    "**/cdk.out": true,
-    "**/node_modules": true
-  },
-  "git.ignoreLimitWarning": true
-}
