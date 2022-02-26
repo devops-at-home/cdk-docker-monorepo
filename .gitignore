@@ -30,12 +30,12 @@ jspm_packages/
 *.tgz
 .yarn-integrity
 .cache
+.idea
 !/.projenrc.js
 /test-reports/
 junit.xml
 /coverage/
 !/.github/workflows/build.yml
-!/.mergify.yml
 !/.github/pull_request_template.md
 !/test/
 !/tsconfig.json
