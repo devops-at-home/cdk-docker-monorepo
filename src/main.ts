@@ -10,8 +10,10 @@ export class MyStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps = {}) {
     super(scope, id, props);
 
-    const params: DockerMonorepoProps = this.node.tryGetContext('params');
-    new DockerMonorepo(this, 'DockerMonorepo', params);
+    const dockerMonorepoProps: DockerMonorepoProps = this.node.tryGetContext(
+      'dockerMonorepoProps'
+    );
+    new DockerMonorepo(this, 'DockerMonorepo', dockerMonorepoProps);
   }
 }
 

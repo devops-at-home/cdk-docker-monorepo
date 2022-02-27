@@ -10,18 +10,6 @@ Object {
     },
   },
   "Resources": Object {
-    "DockerMonorepoGitHubActionsOidcProviderGithubOidcProvider5044317A": Object {
-      "Properties": Object {
-        "ClientIdList": Array [
-          "https://github.com/devops-at-home",
-        ],
-        "ThumbprintList": Array [
-          "6938fd4d98bab03faadb97b34396831e3780aea1",
-        ],
-        "Url": "https://token.actions.githubusercontent.com",
-      },
-      "Type": "AWS::IAM::OIDCProvider",
-    },
     "DockerMonorepoGitHubActionsRole095A018C": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
@@ -71,10 +59,8 @@ Object {
                     "ecr:UploadLayerPart",
                   ],
                   "Condition": Object {
-                    "0": Object {
-                      "StringEquals": Object {
-                        "aws:ResourceTag/githubRepo": "devops-at-home/cdk-docker-monorepo",
-                      },
+                    "StringEquals": Object {
+                      "aws:ResourceTag/githubRepo": "devops-at-home/cdk-docker-monorepo",
                     },
                   },
                   "Effect": "Allow",

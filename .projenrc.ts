@@ -1,7 +1,7 @@
 import { awscdk } from 'projen';
 import { DockerMonorepoProps } from './src/constructs/docker-monorepo';
 
-export const context: DockerMonorepoProps = {
+export const dockerMonorepoProps: DockerMonorepoProps = {
   ecrConfigs: [{ maxImageCount: 10, repositoryName: 'hello-kubernetes' }],
   githubOrg: 'devops-at-home',
   githubRepoName: 'cdk-docker-monorepo',
@@ -18,6 +18,6 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     mergify: false,
   },
   gitignore: ['.idea'],
-  context,
+  context: { dockerMonorepoProps },
 });
 project.synth();

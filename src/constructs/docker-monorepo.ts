@@ -33,10 +33,6 @@ export class DockerMonorepo extends Construct {
     this.repos = [];
 
     // Configure OIDC and create the role
-    new GitHubActionsOidcProvider(this, 'GitHubActionsOidcProvider', [
-      `https://github.com/${githubOrg}`,
-    ]);
-
     this.role = new GitHubActionsRole(this, 'GitHubActionsRole', {
       provider: GitHubActionsOidcProvider.forAccount(),
       repository,
@@ -57,13 +53,11 @@ export class DockerMonorepo extends Construct {
                 'ecr:UploadLayerPart',
               ],
               resources: [`arn:aws:ecr:${REGION}:${ACCOUNT_ID}:repository/*`],
-              conditions: [
-                {
-                  StringEquals: {
-                    'aws:ResourceTag/githubRepo': repository,
-                  },
+              conditions: {
+                StringEquals: {
+                  'aws:ResourceTag/githubRepo': repository,
                 },
-              ],
+              },
             }),
           ],
         }),
