@@ -1,4 +1,12 @@
 import { awscdk } from 'projen';
+import { DockerMonorepoProps } from './src/constructs/docker-monorepo';
+
+export const context: DockerMonorepoProps = {
+  ecrConfigs: [{ maxImageCount: 10, repositoryName: 'hello-kubernetes' }],
+  githubOrg: 'devops-at-home',
+  githubRepoName: 'cdk-docker-monorepo',
+};
+
 const project = new awscdk.AwsCdkTypeScriptApp({
   cdkVersion: '2.14.0',
   defaultReleaseBranch: 'main',
@@ -10,9 +18,6 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     mergify: false,
   },
   gitignore: ['.idea'],
-  // deps: [],                /* Runtime dependencies of this module. */
-  // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
-  // devDeps: [],             /* Build dependencies for this module. */
-  // packageName: undefined,  /* The "name" in package.json. */
+  context,
 });
 project.synth();

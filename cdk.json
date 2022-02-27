@@ -1,5 +1,15 @@
 {
   "app": "npx ts-node -P tsconfig.json --prefer-ts-exts src/main.ts",
+  "context": {
+    "ecrConfigs": [
+      {
+        "maxImageCount": 10,
+        "repositoryName": "hello-kubernetes"
+      }
+    ],
+    "githubOrg": "devops-at-home",
+    "githubRepoName": "cdk-docker-monorepo"
+  },
   "output": "cdk.out",
   "build": "npx projen bundle",
   "watch": {

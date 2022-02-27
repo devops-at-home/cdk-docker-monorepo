@@ -1,0 +1,157 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot 1`] = `
+Object {
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": Object {
+    "DockerMonorepoGitHubActionsOidcProviderGithubOidcProvider5044317A": Object {
+      "Properties": Object {
+        "ClientIdList": Array [
+          "https://github.com/devops-at-home",
+        ],
+        "ThumbprintList": Array [
+          "6938fd4d98bab03faadb97b34396831e3780aea1",
+        ],
+        "Url": "https://token.actions.githubusercontent.com",
+      },
+      "Type": "AWS::IAM::OIDCProvider",
+    },
+    "DockerMonorepoGitHubActionsRole095A018C": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRoleWithWebIdentity",
+              "Condition": Object {
+                "StringLike": Object {
+                  "token.actions.githubusercontent.com:sub": "repo:devops-at-home/*:ref:refs/heads/main*",
+                },
+              },
+              "Effect": "Allow",
+              "Principal": Object {
+                "Federated": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:aws:iam::",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":oidc-provider/token.actions.githubusercontent.com",
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Policies": Array [
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": "ecr:GetAuthorizationToken",
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                Object {
+                  "Action": Array [
+                    "ecr:ListImages",
+                    "ecr:BatchCheckLayerAvailability",
+                    "ecr:CompleteLayerUpload",
+                    "ecr:InitiateLayerUpload",
+                    "ecr:PutImage",
+                    "ecr:UploadLayerPart",
+                  ],
+                  "Condition": Object {
+                    "0": Object {
+                      "StringEquals": Object {
+                        "aws:ResourceTag/githubRepo": "devops-at-home/cdk-docker-monorepo",
+                      },
+                    },
+                  },
+                  "Effect": "Allow",
+                  "Resource": Object {
+                    "Fn::Join": Array [
+                      "",
+                      Array [
+                        "arn:aws:ecr:",
+                        Object {
+                          "Ref": "AWS::Region",
+                        },
+                        ":",
+                        Object {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":repository/*",
+                      ],
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "ecr",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "DockerMonorepoRepositoryhellokubernetesE94F0461": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "ImageScanningConfiguration": Object {
+          "ScanOnPush": true,
+        },
+        "ImageTagMutability": "IMMUTABLE",
+        "LifecyclePolicy": Object {
+          "LifecyclePolicyText": "{\\"rules\\":[{\\"rulePriority\\":1,\\"selection\\":{\\"tagStatus\\":\\"any\\",\\"countType\\":\\"imageCountMoreThan\\",\\"countNumber\\":10},\\"action\\":{\\"type\\":\\"expire\\"}}]}",
+        },
+        "RepositoryName": "hello-kubernetes",
+        "Tags": Array [
+          Object {
+            "Key": "githubRepo",
+            "Value": "devops-at-home/cdk-docker-monorepo",
+          },
+        ],
+      },
+      "Type": "AWS::ECR::Repository",
+      "UpdateReplacePolicy": "Delete",
+    },
+  },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
