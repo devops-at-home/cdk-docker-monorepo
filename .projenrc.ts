@@ -25,6 +25,12 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   buildWorkflowTriggers: {
     push: { branches: ['main'], paths: ['docker/**/VERSION'] },
   },
+  workflowBootstrapSteps: [
+    {
+      name: 'Check Docker version',
+      run: 'docker --version',
+    },
+  ],
   stale: false,
   depsUpgrade: false,
   gitignore: ['.idea'],
