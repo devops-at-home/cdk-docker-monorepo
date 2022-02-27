@@ -1,4 +1,4 @@
-import { Tags, RemovalPolicy, Aws } from 'aws-cdk-lib';
+import { RemovalPolicy, Aws } from 'aws-cdk-lib';
 import {
   Repository,
   RepositoryEncryption,
@@ -29,7 +29,6 @@ export class DockerMonorepo extends Construct {
 
     const { githubOrg, githubRepoName, ecrConfigs } = props;
     const repository = `${githubOrg}/${githubRepoName}`;
-    const { REGION, ACCOUNT_ID } = Aws;
     this.repos = [];
 
     // Configure OIDC and create the role
@@ -52,12 +51,8 @@ export class DockerMonorepo extends Construct {
                 'ecr:PutImage',
                 'ecr:UploadLayerPart',
               ],
-              resources: [`arn:aws:ecr:${REGION}:${ACCOUNT_ID}:repository/*`],
-              conditions: {
-                StringEquals: {
-                  'aws:ResourceTag/githubRepo': repository,
-                },
-              },
+              // TODO: manually specify repos
+              resources: this.getRepoArnsFromConfig(ecrConfigs),
             }),
           ],
         }),
@@ -79,8 +74,13 @@ export class DockerMonorepo extends Construct {
           },
         ],
       });
-      Tags.of(repo).add('githubRepo', repository);
       this.repos.push(repo);
     }
   }
+  private getRepoArnsFromConfig = (ecrConfigs: ECRconfig[]): string[] => {
+    const { REGION, ACCOUNT_ID } = Aws;
+    return ecrConfigs.map((config) => {
+      return `arn:aws:ecr:${REGION}:${ACCOUNT_ID}:repository/${config.repositoryName}`;
+    });
+  };
 }

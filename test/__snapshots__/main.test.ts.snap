@@ -58,11 +58,6 @@ Object {
                     "ecr:PutImage",
                     "ecr:UploadLayerPart",
                   ],
-                  "Condition": Object {
-                    "StringEquals": Object {
-                      "aws:ResourceTag/githubRepo": "devops-at-home/docker-monorepo",
-                    },
-                  },
                   "Effect": "Allow",
                   "Resource": Object {
                     "Fn::Join": Array [
@@ -76,7 +71,7 @@ Object {
                         Object {
                           "Ref": "AWS::AccountId",
                         },
-                        ":repository/*",
+                        ":repository/hello-kubernetes",
                       ],
                     ],
                   },
@@ -101,12 +96,6 @@ Object {
           "LifecyclePolicyText": "{\\"rules\\":[{\\"rulePriority\\":1,\\"selection\\":{\\"tagStatus\\":\\"any\\",\\"countType\\":\\"imageCountMoreThan\\",\\"countNumber\\":10},\\"action\\":{\\"type\\":\\"expire\\"}}]}",
         },
         "RepositoryName": "hello-kubernetes",
-        "Tags": Array [
-          Object {
-            "Key": "githubRepo",
-            "Value": "devops-at-home/docker-monorepo",
-          },
-        ],
       },
       "Type": "AWS::ECR::Repository",
       "UpdateReplacePolicy": "Delete",
