@@ -60,7 +60,7 @@ Object {
                   ],
                   "Condition": Object {
                     "StringEquals": Object {
-                      "aws:ResourceTag/githubRepo": "devops-at-home/cdk-docker-monorepo",
+                      "aws:ResourceTag/githubRepo": "devops-at-home/docker-monorepo",
                     },
                   },
                   "Effect": "Allow",
@@ -104,7 +104,7 @@ Object {
         "Tags": Array [
           Object {
             "Key": "githubRepo",
-            "Value": "devops-at-home/cdk-docker-monorepo",
+            "Value": "devops-at-home/docker-monorepo",
           },
         ],
       },

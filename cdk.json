@@ -9,11 +9,11 @@
         }
       ],
       "githubOrg": "devops-at-home",
-      "githubRepoName": "cdk-docker-monorepo"
+      "githubRepoName": "docker-monorepo"
     }
   },
   "output": "cdk.out",
-  "build": "cd docker/hello-kubernetes && ./build.sh",
+  "build": "npx projen bundle",
   "watch": {
     "include": [
       "src/**/*.ts",
