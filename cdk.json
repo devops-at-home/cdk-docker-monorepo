@@ -13,7 +13,7 @@
     }
   },
   "output": "cdk.out",
-  "build": "npx projen bundle",
+  "build": "cd docker/hello-kubernetes && ./build.sh",
   "watch": {
     "include": [
       "src/**/*.ts",

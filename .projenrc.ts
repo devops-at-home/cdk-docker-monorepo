@@ -16,8 +16,19 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   projenrcTs: true,
   githubOptions: {
     mergify: false,
+    // workflows: false,
+    pullRequestLint: false,
   },
+  buildWorkflow: true,
+  mutableBuild: false,
+  buildCommand: 'cd docker/hello-kubernetes && ./build.sh',
+  buildWorkflowTriggers: {
+    push: { branches: ['main'], paths: ['docker/**/VERSION'] },
+  },
+  stale: false,
+  depsUpgrade: false,
   gitignore: ['.idea'],
   context: { dockerMonorepoProps },
 });
+
 project.synth();
