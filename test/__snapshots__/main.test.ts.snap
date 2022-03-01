@@ -53,6 +53,7 @@ Object {
                   "Action": Array [
                     "ecr:ListImages",
                     "ecr:BatchCheckLayerAvailability",
+                    "ecr:BatchGetImage",
                     "ecr:CompleteLayerUpload",
                     "ecr:InitiateLayerUpload",
                     "ecr:PutImage",
@@ -93,7 +94,7 @@ Object {
         },
         "ImageTagMutability": "IMMUTABLE",
         "LifecyclePolicy": Object {
-          "LifecyclePolicyText": "{\\"rules\\":[{\\"rulePriority\\":1,\\"selection\\":{\\"tagStatus\\":\\"any\\",\\"countType\\":\\"imageCountMoreThan\\",\\"countNumber\\":10},\\"action\\":{\\"type\\":\\"expire\\"}}]}",
+          "LifecyclePolicyText": "{\\"rules\\":[{\\"rulePriority\\":1,\\"selection\\":{\\"tagStatus\\":\\"any\\",\\"countType\\":\\"imageCountMoreThan\\",\\"countNumber\\":12},\\"action\\":{\\"type\\":\\"expire\\"}}]}",
         },
         "RepositoryName": "hello-kubernetes",
       },

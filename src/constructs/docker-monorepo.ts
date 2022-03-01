@@ -46,6 +46,7 @@ export class DockerMonorepo extends Construct {
               actions: [
                 'ecr:ListImages',
                 'ecr:BatchCheckLayerAvailability',
+                'ecr:BatchGetImage',
                 'ecr:CompleteLayerUpload',
                 'ecr:InitiateLayerUpload',
                 'ecr:PutImage',

@@ -2,7 +2,7 @@ import { awscdk } from 'projen';
 import { DockerMonorepoProps } from './src/constructs/docker-monorepo';
 
 export const dockerMonorepoProps: DockerMonorepoProps = {
-  ecrConfigs: [{ maxImageCount: 10, repositoryName: 'hello-kubernetes' }],
+  ecrConfigs: [{ maxImageCount: 12, repositoryName: 'hello-kubernetes' }],
   githubOrg: 'devops-at-home',
   githubRepoName: 'docker-monorepo',
 };
